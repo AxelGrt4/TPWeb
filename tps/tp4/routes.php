@@ -18,7 +18,7 @@ Flight::route('POST /register', function(){
     //récup donnéees POST
     $data = Flight::request() -> data;     //Recupération des données passées en POST
 
-    if(empty($data->Nom)){
+    if(empty($data->Nom)){                 //empty teste si le paramètre passé est vide
         $messages['Nom'] = "Le nom doit etre rempli";
     }
     if(empty($data->Email)){
