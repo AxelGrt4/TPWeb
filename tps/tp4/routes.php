@@ -1,11 +1,11 @@
 <?php
 
 Flight::route('/', function(){
-    Flight::render("index.tpl",array());
+    Flight::render("index.tpl",array());     //Affiche le template index.tpl, qui est la page d'accueil 
 });
 
 Flight::route('GET /register', function(){
-    Flight::render("register.tpl",array());
+    Flight::render("register.tpl",array());  //Affiche le template register
 });
 
 
@@ -76,7 +76,7 @@ Flight::route('POST /register', function(){
 });
 
 Flight::route('GET /success', function(){
-    Flight::render('success.tpl', array());
+    Flight::render('success.tpl', array());       //Affiche le template success
 });
 
 
@@ -88,20 +88,20 @@ Flight::route('GET /fichier', function(){
 });
 
 Flight::route('GET /login', function(){
-    Flight::render("login.tpl",array());
+    Flight::render("login.tpl",array());     //Affichage de la page login
 });
 
 Flight::route('POST /login', function(){
     $db = Flight::get('db');
-    $messages=array();
+    $messages=array();                    //Initialisation à 0 du tableau comportant les messages d'erreur
 
-    //récup donnéees POST
+    //récupération des donnéees POST
     $data = Flight::request() -> data;
 
-    if(empty($data->Email)){
+    if(empty($data->Email)){    //Si aucune adresse mail n'a été saisie
         $messages['Email'] = "Veuillez remplir l'adresse mail";
     } else {
-        if(!filter_var($data->Email, FILTER_VALIDATE_EMAIL)){
+        if(!filter_var($data->Email, FILTER_VALIDATE_EMAIL)){   //Inutilse si le formulaire précise le champs 'mail' 
             $messages['Email']="L'adresse mail est invalide";
         }
     }
@@ -122,7 +122,7 @@ Flight::route('POST /login', function(){
         $messages['Email'] = "Utilisateur non trouvé, veuillez réessayer";
     }
 
-    if(strlen($data->Motdepasse) < 8){
+    if(strlen($data->Motdepasse) < 8){      //Si le mdp fait moins de 8 caractères
         $messages['Motdepasse'] = "Le mot de passe doit faire 8 caractères";
     }
 
@@ -138,7 +138,7 @@ Flight::route('POST /login', function(){
         }
         
     } else{
-     Flight::render('login.tpl', //Redirige sur la page login
+     Flight::render('login.tpl', //Affiche le template login avec les messages d'erreur
          array(
              'messages' => $messages,
              'data' => $_POST 
@@ -148,7 +148,7 @@ Flight::route('POST /login', function(){
 });
 
 Flight::route('/profil', function(){
-    if(!empty($_SESSION)){
+    if(!empty($_SESSION)){                 //Si le tableau de session n'est pas vide -> l'utilisateur a réussi à se connecter
         $db = Flight::get('db');
 
         $profil = $db->prepare("SELECT Nom, Email, Pays, Ville FROM utilisateur WHERE Email=?");   //Récupère toutes les infos de l'utilisateur connecté
@@ -157,9 +157,9 @@ Flight::route('/profil', function(){
         Flight::view()->assign('profil', $profil);       //Initialise un élément profil, utile pour afficher les champs du tableau de session
         
         
-        Flight::render("profil.tpl",array());
+        Flight::render("profil.tpl",array());            //Affiche le template du profil
     } else {
-        Flight::redirect('/login');
+        Flight::redirect('/login');                      //Si le tableau de session est vide -> redirection vers la page login
     }
 
     
@@ -168,6 +168,6 @@ Flight::route('/profil', function(){
 
 Flight::route('/logout', function(){
     session_unset();     //vide le tableau de session
-    Flight::redirect('/');
+    Flight::redirect('/');  //redirige vers la page d'accueil
 })
 ?>
