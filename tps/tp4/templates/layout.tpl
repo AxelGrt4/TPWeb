@@ -13,15 +13,15 @@
 {block name=menu}
 <p>Menu de navigation générique défini dans layout.tpl</p>
 {if isset($Nom)}
-<h1>Bienvenue {$Nom}</h1>
-<a href='./'>index</a>
-<a href='profil'>profil</a>
-<a href='logout'>Deconnexion</a>
+    <h1>Bienvenue {$Nom}</h1>
+    <a href='./'>index</a>
+    <a href='profil'>profil</a>
+    <a href='logout'>Deconnexion</a>
 {else}
-<a href='./'>index</a>
-<a href='register'>inscription</a> 
-<a href='login'>connexion</a>
-<a href='profil'>profil</a>
+    <a href='./'>index</a>
+    <a href='register'>inscription</a> 
+    <a href='login'>connexion</a>
+    <a href='profil'>profil</a>
 {/if}  
 {/block}
 {block name=body}Contenu générique{/block}

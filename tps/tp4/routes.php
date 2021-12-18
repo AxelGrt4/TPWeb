@@ -1,14 +1,14 @@
 <?php
 
 Flight::route('/', function(){
-    Flight::render("index.tpl",array());     //Affiche le template index.tpl, qui est la page d'accueil 
+    Flight::render("index.tpl",array());
 });
+
+/*********************************************************************************************************************************************************************/
 
 Flight::route('GET /register', function(){
-    Flight::render("register.tpl",array());  //Affiche le template register
+    Flight::render("register.tpl",array());
 });
-
-
 
 Flight::route('POST /register', function(){
     
@@ -18,7 +18,7 @@ Flight::route('POST /register', function(){
     //récup donnéees POST
     $data = Flight::request() -> data;     //Recupération des données passées en POST
 
-    if(empty($data->Nom)){                 //empty teste si le paramètre passé est vide
+    if(empty($data->Nom)){
         $messages['Nom'] = "Le nom doit etre rempli";
     }
     if(empty($data->Email)){
@@ -41,9 +41,9 @@ Flight::route('POST /register', function(){
         $messages['Motdepasse'] = "Le mot de passe ne doit pas être vide";
     }
     else
-    if(strlen($data->Motdepasse) < 8){
-        $messages['Motdepasse'] = "Le mot de passe doit faire 8 caracteres";
-    }
+        if(strlen($data->Motdepasse) < 8){
+            $messages['Motdepasse'] = "Le mot de passe doit faire 8 caracteres";
+        }
 
     if(empty($data->Pays)){
         $messages['Pays'] = "Veuillez remplir votre Pays";
@@ -75,38 +75,33 @@ Flight::route('POST /register', function(){
 
 });
 
-Flight::route('GET /success', function(){
-    Flight::render('success.tpl', array());       //Affiche le template success
+Flight::route('/success', function(){
+    Flight::render('success.tpl', array());
+
 });
 
-
-
-
-
-Flight::route('GET /fichier', function(){
-    Flight::render("fichier.tpl",array());
-});
+/*********************************************************************************************************************************************************************/
 
 Flight::route('GET /login', function(){
-    Flight::render("login.tpl",array());     //Affichage de la page login
+    Flight::render("login.tpl",array());
 });
 
 Flight::route('POST /login', function(){
     $db = Flight::get('db');
-    $messages=array();                    //Initialisation à 0 du tableau comportant les messages d'erreur
+    $messages=array();
 
-    //récupération des donnéees POST
+    //récup donnéees POST
     $data = Flight::request() -> data;
 
-    if(empty($data->Email)){    //Si aucune adresse mail n'a été saisie
+    if(empty($data->Email)){
         $messages['Email'] = "Veuillez remplir l'adresse mail";
     } else {
-        if(!filter_var($data->Email, FILTER_VALIDATE_EMAIL)){   //Inutilse si le formulaire précise le champs 'mail' 
+        if(!filter_var($data->Email, FILTER_VALIDATE_EMAIL)){               //inutile quand le type d'input est email
             $messages['Email']="L'adresse mail est invalide";
         }
     }
     $email = $data->Email;
-    $stmt = $db->prepare("SELECT * FROM utilisateur WHERE Email =?");
+    $stmt = $db->prepare("SELECT * FROM utilisateur WHERE Email =?");        //On récupère l'enregistrement de la table utilisateur où l'adresse mail est celle rentrée dans le champs mail du formulaire login
     $stmt->execute([$email]);
     $utilisateur = $stmt->fetch();
 
@@ -122,33 +117,30 @@ Flight::route('POST /login', function(){
         $messages['Email'] = "Utilisateur non trouvé, veuillez réessayer";
     }
 
-    if(strlen($data->Motdepasse) < 8){      //Si le mdp fait moins de 8 caractères
-        $messages['Motdepasse'] = "Le mot de passe doit faire 8 caractères";
-    }
-
     if(count($messages) == 0){     //Si pas de message d'erreur
         
         $infoUser = $db->prepare("SELECT Nom FROM utilisateur WHERE Email =?");   //Récupère le nom de l'utilisateur pour l'afficher
         $infoUser->execute([$email]);
         $res = $infoUser->fetchColumn();
         $_SESSION['Nom'] = $res;          //Initialise la session au nom de l'utilisateur
-        $_SESSION['Email'] = $email;
-        if(!empty($_SESSION['Nom'])) {   //Si la session est initialisée
-            Flight::redirect('/');
-        }
-        
+        $_SESSION['Email'] = $email;      // $email = $data->Email = $_POST['Email']
+
+        Flight::redirect('/');
+
     } else{
-     Flight::render('login.tpl', //Affiche le template login avec les messages d'erreur
+     Flight::render('login.tpl', //Redirige sur la page login
          array(
              'messages' => $messages,
              'data' => $_POST 
          ));
- }
+    }
 
 });
 
+/*********************************************************************************************************************************************************************/
+
 Flight::route('/profil', function(){
-    if(!empty($_SESSION)){                 //Si le tableau de session n'est pas vide -> l'utilisateur a réussi à se connecter
+    if(!empty($_SESSION)){
         $db = Flight::get('db');
 
         $profil = $db->prepare("SELECT Nom, Email, Pays, Ville FROM utilisateur WHERE Email=?");   //Récupère toutes les infos de l'utilisateur connecté
@@ -157,17 +149,18 @@ Flight::route('/profil', function(){
         Flight::view()->assign('profil', $profil);       //Initialise un élément profil, utile pour afficher les champs du tableau de session
         
         
-        Flight::render("profil.tpl",array());            //Affiche le template du profil
+        Flight::render("profil.tpl",array());
     } else {
-        Flight::redirect('/login');                      //Si le tableau de session est vide -> redirection vers la page login
+        Flight::redirect('/login');
     }
 
     
 });
 
+/*********************************************************************************************************************************************************************/
 
 Flight::route('/logout', function(){
     session_unset();     //vide le tableau de session
-    Flight::redirect('/');  //redirige vers la page d'accueil
+    Flight::redirect('/');
 })
 ?>

@@ -7,6 +7,7 @@
 Contenu du template login.tpl
 </p>
 </div>
+<div>
 <form action="login" method="post">
 <div>
         <br>
@@ -29,4 +30,5 @@ Contenu du template login.tpl
     <input type="submit" value="Se connecter">
     </div>
 </form>
+</div>
 {/block}

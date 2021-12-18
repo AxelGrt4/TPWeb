@@ -1,8 +1,8 @@
 {extends file='layout.tpl'}
 {block name=title}Register{/block}
 {block name=body}
-<h1>Register</h1>
 <div id='main'>
+<h1>Register</h1>
 <p> 
 <form action="register" method="post">
     <div>
